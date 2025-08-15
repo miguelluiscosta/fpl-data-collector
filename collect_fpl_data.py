@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 # CONFIG
-LEAGUE_ID = 98345  # 🔁 Replace with your actual mini-league ID
+LEAGUE_ID = 123456  # 🔁 Replace with your actual mini-league ID
 BASE_URL = "https://fantasy.premierleague.com/api"
 DATA_DIR = "data"
 
@@ -14,13 +14,12 @@ def get_json(url):
     return res.json()
 
 def fetch_bootstrap():
-    return get_json(f"{BASE_URL}/bootstrap-static/")
+    data = get_json(f"{BASE_URL}/bootstrap-static/")
+    print("Fetched events data:", data["events"])  # Add this line for debugging
+    return data
 
 def fetch_league_standings(league_id):
     return get_json(f"{BASE_URL}/leagues-classic/{league_id}/standings/")
-
-def fetch_entry(entry_id):
-    return get_json(f"{BASE_URL}/entry/{entry_id}/")
 
 def fetch_entry_history(entry_id):
     return get_json(f"{BASE_URL}/entry/{entry_id}/history/")
@@ -40,14 +39,12 @@ def main():
     events = bootstrap["events"]
     element_types = {e["id"]: e["singular_name_short"] for e in bootstrap["element_types"]}
 
-    # Get league standings
-    league = fetch_league_standings(LEAGUE_ID)
-    standings = league["standings"]["results"]
-
+    # Get the latest gameweek (live data)
+    gameweek = max(events, key=lambda x: x["id"])["id"]
     data_snapshot = {
         "timestamp": timestamp,
         "players": [],
-        "gameweek": None,
+        "gameweek": gameweek,
         "most_captained": {},
         "chips_used": {},
         "differentials": [],
@@ -55,9 +52,12 @@ def main():
 
     captain_counter = {}
     chips_counter = {}
-    gameweek_points = {}
     total_gw_points = {}
 
+    league = fetch_league_standings(LEAGUE_ID)
+    standings = league["standings"]["results"]
+
+    # Loop through each player in the standings
     for player in standings:
         entry_id = player["entry"]
         player_name = player["entry_name"]
@@ -96,17 +96,6 @@ def main():
             "points_per_gw": gw_points,
         })
 
-    # Safety check for finished events
-    finished_events = [e for e in events if e["finished"]]
-    
-    if not finished_events:
-        print("No finished events found. Exiting...")
-        return  # Exit gracefully if no finished events
-
-    # Get the most recent finished gameweek
-    gameweek = max(finished_events, key=lambda x: x["id"])["id"]
-    data_snapshot["gameweek"] = gameweek
-    
     # Process captains
     overall_captains = {}
     for gw, captains in captain_counter.items():
@@ -127,4 +116,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
