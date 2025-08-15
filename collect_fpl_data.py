@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 # CONFIG
-LEAGUE_ID = 123456  # 🔁 Replace with your actual mini-league ID
+LEAGUE_ID = 98345  # 🔁 Replace with your actual mini-league ID
 BASE_URL = "https://fantasy.premierleague.com/api"
 DATA_DIR = "data"
 
