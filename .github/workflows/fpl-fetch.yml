@@ -24,24 +24,22 @@ jobs:
       - name: Run FPL data collection script
         run: python collect_fpl_data.py
 
+      - name: Check files before commit
+        run: |
+          echo "Files in the repository before commit:"
+          ls -alh data/
+          git status
+
       - name: Configure Git
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-    - name: Check files before commit
-  run: |
-    echo "Files in the repository before commit:"
-    ls -alh data/
-    git status
-
-- name: Commit new snapshot
-  run: |
-    git add data/
-    if git diff --cached --quiet; then
-      echo "No changes to commit"
-    else
-      git commit -m "Add FPL data snapshot - $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-      git push
-    fi
-
+      - name: Commit new snapshot
+        run: |
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add FPL data snapshot - $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            git push
