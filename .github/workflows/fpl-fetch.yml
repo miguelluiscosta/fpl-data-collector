@@ -38,8 +38,10 @@ jobs:
       - name: Commit new snapshot
         run: |
           git add data/
+          git diff --cached
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
             git commit -m "Add FPL data snapshot - $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
             git push
+          fi
