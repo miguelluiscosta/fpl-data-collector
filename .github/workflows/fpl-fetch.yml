@@ -1,0 +1,31 @@
+name: Fetch FPL Data
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour
+  workflow_dispatch:     # Allows manual trigger from GitHub UI
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Run data fetch script
+        run: python fetch_fpl_data.py
+      
+      - name: Upload league_data.json as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: league_data
+          path: league_data.json
