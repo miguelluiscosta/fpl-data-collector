@@ -40,13 +40,14 @@ def main():
     events = bootstrap["events"]
     element_types = {e["id"]: e["singular_name_short"] for e in bootstrap["element_types"]}
 
+    # Get league standings
     league = fetch_league_standings(LEAGUE_ID)
     standings = league["standings"]["results"]
 
     data_snapshot = {
         "timestamp": timestamp,
         "players": [],
-        "gameweek": max([e for e in events if e["finished"]], key=lambda x: x["id"])["id"],
+        "gameweek": None,
         "most_captained": {},
         "chips_used": {},
         "differentials": [],
@@ -95,6 +96,17 @@ def main():
             "points_per_gw": gw_points,
         })
 
+    # Safety check for finished events
+    finished_events = [e for e in events if e["finished"]]
+    
+    if not finished_events:
+        print("No finished events found. Exiting...")
+        return  # Exit gracefully if no finished events
+
+    # Get the most recent finished gameweek
+    gameweek = max(finished_events, key=lambda x: x["id"])["id"]
+    data_snapshot["gameweek"] = gameweek
+    
     # Process captains
     overall_captains = {}
     for gw, captains in captain_counter.items():
@@ -107,7 +119,7 @@ def main():
     # Chips used
     data_snapshot["chips_used"] = chips_counter
 
-    # Save data
+    # Save data to JSON file
     with open(filename, "w") as f:
         json.dump(data_snapshot, f, indent=2)
 
@@ -115,3 +127,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
