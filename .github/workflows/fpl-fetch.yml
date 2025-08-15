@@ -25,7 +25,7 @@ jobs:
         run: python fetch_fpl_data.py
       
       - name: Upload league_data.json as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: league_data
           path: league_data.json
