@@ -1,0 +1,8 @@
+curl -X POST https://fpl.panopticon.pt/wp-json/wp/v2/posts \
+-u "api_user:fpl-api-token-abc123xyz456" \
+-H "Content-Type: application/json" \
+-d '{
+  "title": "Test FPL Post",
+  "status": "publish",
+  "content": "This is a test post created via the WordPress REST API"
+}'
