@@ -1,86 +1,47 @@
-def main():
-    os.makedirs(DATA_DIR, exist_ok=True)
+name: Fetch FPL Data
 
-    timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H-%M-%S")
-    filename = os.path.join(DATA_DIR, f"snapshot_{timestamp}.json")
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour
+  workflow_dispatch:     # Allows manual trigger from GitHub UI
 
-    # Load all base data
-    bootstrap = fetch_bootstrap()
-    elements = {p["id"]: p for p in bootstrap["elements"]}
-    events = bootstrap["events"]
-    element_types = {e["id"]: e["singular_name_short"] for e in bootstrap["element_types"]}
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
 
-    # Get the latest gameweek (live data)
-    gameweek = max(events, key=lambda x: x["id"])["id"]
-    data_snapshot = {
-        "timestamp": timestamp,
-        "players": [],
-        "gameweek": gameweek,
-        "most_captained": {},
-        "chips_used": {},
-        "differentials": [],
-    }
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    captain_counter = {}
-    chips_counter = {}
-    total_gw_points = {}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-    league = fetch_league_standings(LEAGUE_ID)
-    standings = league["standings"]["results"]
+      - name: Install dependencies
+        run: pip install requests
 
-    # Loop through each player in the standings
-    for player in standings:
-        entry_id = player["entry"]
-        player_name = player["entry_name"]
+      - name: Run FPL data collection script
+        run: python collect_fpl_data.py
 
-        history = fetch_entry_history(entry_id)
-        current = history["current"]
-        picks = []
+      - name: Debug: List files before commit
+        run: |
+          echo "Files in the 'data' directory before commit:"
+          ls -alh data/
 
-        # Per-gameweek points
-        gw_points = {gw["event"]: gw["points"] for gw in current}
-        total_gw_points[player_name] = gw_points
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
-        # Picks and chips
-        for gw in current:
-            picks_data = fetch_entry_picks(entry_id, gw["event"])
-            captain = picks_data["picks"][0]["element"]
-            for p in picks_data["picks"]:
-                if p["is_captain"]:
-                    captain = p["element"]
-            chip_used = picks_data.get("chip")
-
-            # Count captain
-            captain_name = elements[captain]["web_name"]
-            captain_counter.setdefault(gw["event"], {})
-            captain_counter[gw["event"]].setdefault(captain_name, 0)
-            captain_counter[gw["event"]][captain_name] += 1
-
-            # Count chip
-            if chip_used:
-                chips_counter.setdefault(chip_used, 0)
-                chips_counter[chip_used] += 1
-
-        data_snapshot["players"].append({
-            "player_name": player_name,
-            "entry_id": entry_id,
-            "points_per_gw": gw_points,
-        })
-
-    # Process captains
-    overall_captains = {}
-    for gw, captains in captain_counter.items():
-        most_captain = max(captains.items(), key=lambda x: x[1])
-        data_snapshot["most_captained"][f"GW{gw}"] = most_captain
-        for name, count in captains.items():
-            overall_captains[name] = overall_captains.get(name, 0) + count
-    data_snapshot["most_captained"]["overall"] = max(overall_captains.items(), key=lambda x: x[1])
-
-    # Chips used
-    data_snapshot["chips_used"] = chips_counter
-
-    # Save data to JSON file
-    with open(filename, "w") as f:
-        json.dump(data_snapshot, f, indent=2)
-
-    print(f"Snapshot saved to {filename}")
+      - name: Commit new snapshot
+        run: |
+          git add data/
+          echo "Files staged for commit:"
+          git status
+          git diff --cached
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add FPL data snapshot - $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+            git push
