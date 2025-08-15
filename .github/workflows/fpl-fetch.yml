@@ -25,17 +25,17 @@ jobs:
         run: python collect_fpl_data.py
 
       - name: Debug: List files before commit
-        run: |  
+        run: |
           echo "Files in the 'data' directory before commit:"
           ls -alh data/
 
       - name: Configure Git
-        run: |  
+        run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
       - name: Commit new snapshot
-        run: |  
+        run: |
           git add data/
           echo "Files staged for commit:"
           git status
