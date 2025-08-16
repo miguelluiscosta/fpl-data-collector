@@ -113,11 +113,11 @@ def main():
         json.dump(data_snapshot, f, indent=2)
 
     # NEW: also write/update a stable pointer
-with open(os.path.join(DATA_DIR, "latest.json"), "w") as f:
-    json.dump(data_snapshot, f, indent=2)
+    with open(os.path.join(DATA_DIR, "latest.json"), "w") as f:
+        json.dump(data_snapshot, f, indent=2)
 
     # after building overall_captains dict
-data_snapshot["captain_tally"] = overall_captains  # {player_web_name: count}
+    data_snapshot["captain_tally"] = overall_captains  # {player_web_name: count}
 
     print(f"Snapshot saved to {filename} and data/latest.json updated")
 
