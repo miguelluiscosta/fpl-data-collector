@@ -23,12 +23,23 @@
       color: red;
       font-weight: bold;
     }
+    .player-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .player-list li {
+      background: #fff;
+      margin: 5px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+    }
   </style>
 </head>
 <body>
   <h1>⚽ FPL Mini-League Dashboard</h1>
   <div id="app">Loading latest snapshot...</div>
-  <canvas id="pointsChart"></canvas>
 
   <script>
     // 🔑 Update this to your GitHub username/repo
@@ -51,41 +62,22 @@
     }
 
     function renderDashboard(data) {
+      const playerList = data.players.map(p => {
+        const points = p.points_per_gw[data.gameweek] || 0;
+        return `
+          <li>
+            <span>${p.player_name}</span>
+            <span>${points} points</span>
+          </li>
+        `;
+      }).join('');
+
       document.getElementById("app").innerHTML = `
         <p><strong>Gameweek:</strong> ${data.gameweek}</p>
-        <p><strong>Updated at:</strong> ${data.timestamp}</p>
-        <p><strong>Most Captained (Overall):</strong> ${data.most_captained.overall[0]} (${data.most_captained.overall[1]} times)</p>
-        <p><strong>Total Players:</strong> ${data.players.length}</p>
+        <ul class="player-list">
+          ${playerList}
+        </ul>
       `;
-
-      // Example chart: Points per player this GW
-      const ctx = document.getElementById('pointsChart').getContext('2d');
-      const labels = data.players.map(p => p.player_name);
-      const gwPoints = data.players.map(p => p.points_per_gw[data.gameweek] || 0);
-
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: `GW${data.gameweek} Points`,
-            data: gwPoints,
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: true },
-            tooltip: { enabled: true }
-          },
-          scales: {
-            y: { beginAtZero: true }
-          }
-        }
-      });
     }
 
     loadData();
