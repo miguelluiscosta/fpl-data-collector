@@ -4,7 +4,7 @@ from datetime import datetime
 import requests
 
 # Replace with your league ID
-LEAGUE_ID = 123456  # <- change this to your league id
+LEAGUE_ID = 98345  # <- change this to your league id
 
 BASE_URL = "https://fantasy.premierleague.com/api"
 
