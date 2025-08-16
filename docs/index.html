@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FPL Mini‑League Dashboard</title>
+  <!-- Tailwind (CDN) for quick theming -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff', 100:'#e0e7ff', 200:'#c7d2fe', 300:'#a5b4fc', 400:'#818cf8', 500:'#6366f1', 600:'#4f46e5', 700:'#4338ca', 800:'#3730a3', 900:'#312e81'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- React + Recharts UMD -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <div class="max-w-7xl mx-auto p-4 md:p-6">
+    <header class="flex flex-col md:flex-row md:items-end gap-3 md:gap-6 mb-4">
+      <div class="grow">
+        <h1 class="text-2xl md:text-3xl font-semibold">FPL Mini‑League Dashboard</h1>
+        <p id="subtitle" class="text-slate-500 text-sm mt-1">Loading latest snapshot…</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 text-brand-800 text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm1-13h4v2h-6V6h2v3z"/></svg>
+          <span id="updated">—</span>
+        </span>
+      </div>
+    </header>
+
+    <!-- Cards grid -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Standings -->
+      <article class="lg:col-span-2 bg-white shadow-sm rounded-2xl border border-slate-200 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-lg font-semibold">Standings</h2>
+          <div id="leagueMeta" class="text-sm text-slate-500"></div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr class="border-b text-slate-500">
+                <th class="text-left p-2">#</th>
+                <th class="text-left p-2">Team</th>
+                <th class="text-right p-2">Total</th>
+              </tr>
+            </thead>
+            <tbody id="standings" class="divide-y"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- Captains -->
+      <article class="bg-white shadow-sm rounded-2xl border border-slate-200 p-4">
+        <h2 class="text-lg font-semibold mb-3">Most Captained (overall)</h2>
+        <div id="captains"></div>
+      </article>
+    </section>
+
+    <!-- Charts -->
+    <section class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <article class="bg-white shadow-sm rounded-2xl border border-slate-200 p-4">
+        <h2 class="text-lg font-semibold mb-3">Weekly Points by Manager</h2>
+        <div id="weekly" style="width:100%;height:360px"></div>
+      </article>
+      <article class="bg-white shadow-sm rounded-2xl border border-slate-200 p-4">
+        <h2 class="text-lg font-semibold mb-3">Chips Usage</h2>
+        <div id="chips" style="width:100%;height:360px"></div>
+      </article>
+    </section>
+
+    <footer class="pt-6 text-xs text-slate-400">Built for your private mini‑league • Data auto‑updates from GitHub.</footer>
+  </div>
+
+  <script>
+  (function(){
+    const LATEST_JSON_URL = "https://raw.githubusercontent.com/REPLACE_USER/REPLACE_REPO/main/data/latest.json"; // ← change this
+    const FPL_BOOTSTRAP_URL = "https://fantasy.premierleague.com/api/bootstrap-static/";
+
+    const {ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, BarChart, Bar} = Recharts;
+
+    const elSub = document.getElementById('subtitle');
+    const elUpd = document.getElementById('updated');
+    const elStd = document.getElementById('standings');
+
+    const weeklyRoot = ReactDOM.createRoot(document.getElementById('weekly'));
+    const chipsRoot = ReactDOM.createRoot(document.getElementById('chips'));
+    const capsRoot  = ReactDOM.createRoot(document.getElementById('captains'));
+
+    let playerPhotoByWebName = {};
+
+    async function fetchBootstrap(){
+      try{
+        const r = await fetch(FPL_BOOTSTRAP_URL);
+        const j = await r.json();
+        // map web_name -> photo url
+        j.elements.forEach(e=>{
+          const code = (e.photo||'').split('.')[0];
+          const url = code ? `https://resources.premierleague.com/premierleague/photos/players/250x250/p${code}.png` : null;
+          playerPhotoByWebName[e.web_name] = url;
+        });
+      }catch(e){ /* ok without photos */ }
+    }
+
+    function fmtDate(s){
+      try{ return new Date(s.replace(/-/g,':').replace('T', ' ').replace(/:(\d\d)$/,'-$1').replace(/:/g,'-')).toISOString(); }catch(e){ return s; }
+    }
+
+    function buildStandings(players){
+      // total points = sum of per-GW
+      const rows = players.map(p=>{
+        const pts = Object.values(p.points_per_gw||{}).reduce((a,b)=>a+(b||0),0);
+        return { team:p.player_name, total:pts };
+      }).sort((a,b)=>b.total-a.total);
+
+      elStd.innerHTML = '';
+      rows.forEach((r,i)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td class="p-2">${i+1}</td><td class="p-2">${r.team}</td><td class="p-2 text-right font-semibold">${r.total}</td>`;
+        elStd.appendChild(tr);
+      });
+      return rows;
+    }
+
+    function buildWeekly(players){
+      const gwSet = new Set();
+      players.forEach(p=>Object.keys(p.points_per_gw||{}).forEach(k=>gwSet.add(Number(k))));
+      const gws = Array.from(gwSet).sort((a,b)=>a-b);
+      const data = gws.map(gw=>{
+        const row = { gw };
+        players.forEach(p=>{ row[p.player_name] = (p.points_per_gw||{})[gw] ?? null; });
+        return row;
+      });
+
+      const lines = players.map(p=>React.createElement(Line,{ key:p.player_name, dataKey:p.player_name, type:'monotone', dot:false }));
+      weeklyRoot.render(
+        React.createElement(ResponsiveContainer,null,
+          React.createElement(LineChart,{data},
+            React.createElement(CartesianGrid,{strokeDasharray:"3 3"}),
+            React.createElement(XAxis,{dataKey:'gw', tickFormatter:v=>`GW ${v}`}),
+            React.createElement(YAxis,null),
+            React.createElement(Tooltip,null),
+            React.createElement(Legend,null),
+            ...lines
+          )
+        )
+      );
+    }
+
+    function buildChips(chips){
+      const data = Object.entries(chips||{}).map(([name,count])=>({name, value:count}));
+      if(!data.length)
