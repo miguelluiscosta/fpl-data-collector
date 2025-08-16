@@ -123,3 +123,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # Also save as "latest.json" for the dashboard
+    latest_file = os.path.join(DATA_DIR, "latest.json")
+    with open(latest_file, "w") as f:
+    json.dump(data_snapshot, f, indent=2)
+
+print(f"Latest snapshot saved to {latest_file}")
+
