@@ -8,24 +8,30 @@ LEAGUE_ID = 98345  # 🔁 Replace with your actual mini-league ID
 BASE_URL = "https://fantasy.premierleague.com/api"
 DATA_DIR = "data"
 
+
 def get_json(url):
     res = requests.get(url)
     res.raise_for_status()
     return res.json()
 
+
 def fetch_bootstrap():
     data = get_json(f"{BASE_URL}/bootstrap-static/")
-    print("Fetched events data:", data["events"])  # Add this line for debugging
+    print("Fetched events data:", data["events"])  # Debugging
     return data
+
 
 def fetch_league_standings(league_id):
     return get_json(f"{BASE_URL}/leagues-classic/{league_id}/standings/")
 
+
 def fetch_entry_history(entry_id):
     return get_json(f"{BASE_URL}/entry/{entry_id}/history/")
 
+
 def fetch_entry_picks(entry_id, event_id):
     return get_json(f"{BASE_URL}/entry/{entry_id}/event/{event_id}/picks/")
+
 
 def main():
     os.makedirs(DATA_DIR, exist_ok=True)
@@ -37,10 +43,10 @@ def main():
     bootstrap = fetch_bootstrap()
     elements = {p["id"]: p for p in bootstrap["elements"]}
     events = bootstrap["events"]
-    element_types = {e["id"]: e["singular_name_short"] for e in bootstrap["element_types"]}
 
-    # Get the latest gameweek (live data)
+    # latest gameweek
     gameweek = max(events, key=lambda x: x["id"])["id"]
+
     data_snapshot = {
         "timestamp": timestamp,
         "players": [],
@@ -57,16 +63,15 @@ def main():
     league = fetch_league_standings(LEAGUE_ID)
     standings = league["standings"]["results"]
 
-    # Loop through each player in the standings
+    # Loop through each player
     for player in standings:
         entry_id = player["entry"]
         player_name = player["entry_name"]
 
         history = fetch_entry_history(entry_id)
         current = history["current"]
-        picks = []
 
-        # Per-gameweek points
+        # Points per GW
         gw_points = {gw["event"]: gw["points"] for gw in current}
         total_gw_points[player_name] = gw_points
 
@@ -77,6 +82,7 @@ def main():
             for p in picks_data["picks"]:
                 if p["is_captain"]:
                     captain = p["element"]
+
             chip_used = picks_data.get("chip")
 
             # Count captain
@@ -108,26 +114,20 @@ def main():
     # Chips used
     data_snapshot["chips_used"] = chips_counter
 
-    # Save data to JSON file
+    # Save data to timestamped file
     with open(filename, "w") as f:
         json.dump(data_snapshot, f, indent=2)
 
-    # NEW: also write/update a stable pointer
-    with open(os.path.join(DATA_DIR, "latest.json"), "w") as f:
+    # Also save stable "latest.json"
+    latest_file = os.path.join(DATA_DIR, "latest.json")
+    with open(latest_file, "w") as f:
         json.dump(data_snapshot, f, indent=2)
 
-    # after building overall_captains dict
-    data_snapshot["captain_tally"] = overall_captains  # {player_web_name: count}
+    # Save captain tally too
+    data_snapshot["captain_tally"] = overall_captains
 
-    print(f"Snapshot saved to {filename} and data/latest.json updated")
+    print(f"Snapshot saved to {filename} and {latest_file} updated")
+
 
 if __name__ == "__main__":
     main()
-
-    # Also save as "latest.json" for the dashboard
-    latest_file = os.path.join(DATA_DIR, "latest.json")
-    with open(latest_file, "w") as f:
-    json.dump(data_snapshot, f, indent=2)
-
-print(f"Latest snapshot saved to {latest_file}")
-
