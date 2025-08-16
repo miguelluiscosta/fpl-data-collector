@@ -27,6 +27,9 @@ jobs:
     - name: Run data collector
       run: python collect_fpl_data.py
 
+    - name: Move JSON to docs/data
+      run: mv data/*.json docs/data || true
+
     - name: Commit data
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
