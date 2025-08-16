@@ -62,12 +62,30 @@
     }
 
     function renderDashboard(data) {
+      // Check if the players data is valid
+      if (!data.players || !Array.isArray(data.players)) {
+        document.getElementById("app").innerHTML =
+          `<p class="error">Invalid players data structure.</p>`;
+        return;
+      }
+
+      // Debug: Log data structure to verify
+      console.log('Gameweek:', data.gameweek);
+      console.log('Players:', data.players);
+
+      // Fix for points retrieval using string-based gameweek keys
       const playerList = data.players.map(p => {
-        const points = p.points_per_gw[data.gameweek] || 0;
+        // Check the points_per_gw structure
+        const points = p.points_per_gw[String(data.gameweek)]; // Ensure gameweek is treated as a string
+        console.log(`${p.player_name} - Points for GW${data.gameweek}:`, points); // Debug
+
+        // Set points to 0 if undefined (though we expect correct data)
+        const pointsToShow = points !== undefined ? points : 0;
+
         return `
           <li>
             <span>${p.player_name}</span>
-            <span>${points} points</span>
+            <span>${pointsToShow} points</span>
           </li>
         `;
       }).join('');
