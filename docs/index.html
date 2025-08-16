@@ -4,35 +4,73 @@
   <meta charset="UTF-8">
   <title>FPL Mini-League Dashboard</title>
   <style>
+    /* Apple-like font stack */
     body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      background-color: #0a0a0a;
+      color: #ffffff;
       margin: 0;
-      padding: 20px;
+      padding: 40px 20px;
+      line-height: 1.6;
     }
+
     h1 {
       text-align: center;
-      margin-bottom: 30px;
+      font-weight: 600;
+      font-size: 2.5rem;
+      margin-bottom: 40px;
+      color: #ffffff;
     }
+
     #app {
-      max-width: 1000px;
+      max-width: 800px;
       margin: 0 auto;
     }
-    .error {
-      color: red;
-      font-weight: bold;
-    }
+
     .player-list {
-      list-style-type: none;
+      list-style: none;
       padding: 0;
+      margin: 0;
     }
+
     .player-list li {
-      background: #fff;
-      margin: 5px 0;
-      padding: 10px;
-      border: 1px solid #ddd;
+      background: #1c1c1e;
+      margin-bottom: 12px;
+      padding: 20px 24px;
+      border-radius: 12px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s ease;
+    }
+
+    .player-list li:hover {
+      transform: scale(1.01);
+    }
+
+    .player-name {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .player-points {
+      font-size: 1rem;
+      color: #9cd67d;
+      font-weight: 600;
+    }
+
+    .meta-info {
+      text-align: center;
+      font-size: 1rem;
+      color: #aaa;
+      margin-bottom: 30px;
+    }
+
+    .error {
+      color: #ff5f57;
+      font-weight: bold;
+      text-align: center;
     }
   </style>
 </head>
@@ -63,17 +101,16 @@
       const players = data.players || [];
 
       if (players.length === 0) {
-        document.getElementById("app").innerHTML = `<p>No players found.</p>`;
+        document.getElementById("app").innerHTML = `<p class="error">No players found.</p>`;
         return;
       }
 
-      // 🟡 Find the latest gameweek by checking the first player's points_per_gw keys
       const firstPlayer = players[0];
       const gwKeys = Object.keys(firstPlayer.points_per_gw || {});
       const latestGameweek = gwKeys.length > 0 ? Math.max(...gwKeys.map(Number)) : null;
 
       if (!latestGameweek) {
-        document.getElementById("app").innerHTML = `<p>No gameweek data found.</p>`;
+        document.getElementById("app").innerHTML = `<p class="error">No gameweek data found.</p>`;
         return;
       }
 
@@ -81,14 +118,14 @@
         const points = p.points_per_gw[String(latestGameweek)] ?? 0;
         return `
           <li>
-            <span>${p.player_name}</span>
-            <span>${points} points</span>
+            <span class="player-name">${p.player_name}</span>
+            <span class="player-points">${points} pts</span>
           </li>
         `;
       }).join('');
 
       document.getElementById("app").innerHTML = `
-        <p><strong>Gameweek:</strong> ${latestGameweek}</p>
+        <div class="meta-info">Gameweek ${latestGameweek}</div>
         <ul class="player-list">
           ${playerList}
         </ul>
