@@ -1,0 +1,172 @@
+{
+  "timestamp": "2025-08-16T15-42-02",
+  "players": [
+    {
+      "player_name": "barb.m_team",
+      "entry_id": 6227689,
+      "points_per_gw": {
+        "1": 21
+      }
+    },
+    {
+      "player_name": "FCPiton",
+      "entry_id": 639898,
+      "points_per_gw": {
+        "1": 18
+      }
+    },
+    {
+      "player_name": "Thronebreakers",
+      "entry_id": 5859284,
+      "points_per_gw": {
+        "1": 18
+      }
+    },
+    {
+      "player_name": "k19squad_team",
+      "entry_id": 565862,
+      "points_per_gw": {
+        "1": 16
+      }
+    },
+    {
+      "player_name": "Traphouse",
+      "entry_id": 613112,
+      "points_per_gw": {
+        "1": 16
+      }
+    },
+    {
+      "player_name": "Guilhade FC Team",
+      "entry_id": 1846280,
+      "points_per_gw": {
+        "1": 16
+      }
+    },
+    {
+      "player_name": "xaxaxa",
+      "entry_id": 3206357,
+      "points_per_gw": {
+        "1": 16
+      }
+    },
+    {
+      "player_name": "ogoid fc",
+      "entry_id": 3889214,
+      "points_per_gw": {
+        "1": 16
+      }
+    },
+    {
+      "player_name": "Stretford End",
+      "entry_id": 5563128,
+      "points_per_gw": {
+        "1": 16
+      }
+    },
+    {
+      "player_name": "FCTeam",
+      "entry_id": 5640672,
+      "points_per_gw": {
+        "1": 16
+      }
+    },
+    {
+      "player_name": "FC Zaka",
+      "entry_id": 7091903,
+      "points_per_gw": {
+        "1": 16
+      }
+    },
+    {
+      "player_name": "cachorRELA",
+      "entry_id": 8713538,
+      "points_per_gw": {
+        "1": 16
+      }
+    },
+    {
+      "player_name": "Razoreater",
+      "entry_id": 8949623,
+      "points_per_gw": {
+        "1": 16
+      }
+    },
+    {
+      "player_name": "liBEERpool",
+      "entry_id": 4953792,
+      "points_per_gw": {
+        "1": 12
+      }
+    },
+    {
+      "player_name": "Final Fantasy XV",
+      "entry_id": 7091497,
+      "points_per_gw": {
+        "1": 11
+      }
+    },
+    {
+      "player_name": "Sport Lisboa Tomates",
+      "entry_id": 9052821,
+      "points_per_gw": {
+        "1": 10
+      }
+    },
+    {
+      "player_name": "Senhora da Guia FC",
+      "entry_id": 1994282,
+      "points_per_gw": {
+        "1": 8
+      }
+    },
+    {
+      "player_name": "Maior Team",
+      "entry_id": 5709428,
+      "points_per_gw": {
+        "1": 8
+      }
+    },
+    {
+      "player_name": "Snake Club",
+      "entry_id": 5702959,
+      "points_per_gw": {
+        "1": 5
+      }
+    },
+    {
+      "player_name": "Caminho Lucido",
+      "entry_id": 276068,
+      "points_per_gw": {
+        "1": 3
+      }
+    },
+    {
+      "player_name": "TEAM LAC",
+      "entry_id": 61463,
+      "points_per_gw": {
+        "1": 2
+      }
+    },
+    {
+      "player_name": "thomas team",
+      "entry_id": 574023,
+      "points_per_gw": {
+        "1": 2
+      }
+    }
+  ],
+  "gameweek": 38,
+  "most_captained": {
+    "GW1": [
+      "M.Salah",
+      13
+    ],
+    "overall": [
+      "M.Salah",
+      13
+    ]
+  },
+  "chips_used": {},
+  "differentials": []
+}
