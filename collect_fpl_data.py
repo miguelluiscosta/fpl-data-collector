@@ -119,7 +119,7 @@ with open(os.path.join(DATA_DIR, "latest.json"), "w") as f:
     # after building overall_captains dict
 data_snapshot["captain_tally"] = overall_captains  # {player_web_name: count}
 
-    print(f"Snapshot saved to {filename}")
+    print(f"Snapshot saved to {filename} and data/latest.json updated")
 
 if __name__ == "__main__":
     main()
