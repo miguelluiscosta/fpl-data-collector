@@ -1,0 +1,229 @@
+{
+  "league": {
+    "id": 98345,
+    "name": "FPL PRO AVT LEAGUE",
+    "updated": "2025-08-16T22:18:04.122269Z"
+  },
+  "players": [
+    {
+      "entry_id": 7091497,
+      "team_name": "Final Fantasy XV",
+      "player_name": "Filipe Andrade",
+      "points_per_gw": {
+        "1": 57
+      },
+      "chips": [],
+      "overall_points": 57
+    },
+    {
+      "entry_id": 8949623,
+      "team_name": "Razoreater",
+      "player_name": "Lu\u00eds Ribeiro",
+      "points_per_gw": {
+        "1": 55
+      },
+      "chips": [],
+      "overall_points": 55
+    },
+    {
+      "entry_id": 574023,
+      "team_name": "thomas team",
+      "player_name": "Miguel Tomas",
+      "points_per_gw": {
+        "1": 45
+      },
+      "chips": [],
+      "overall_points": 45
+    },
+    {
+      "entry_id": 5563128,
+      "team_name": "Stretford End",
+      "player_name": "Luis Miguel Costa",
+      "points_per_gw": {
+        "1": 43
+      },
+      "chips": [],
+      "overall_points": 43
+    },
+    {
+      "entry_id": 7091903,
+      "team_name": "FC Zaka",
+      "player_name": "Rui Correia",
+      "points_per_gw": {
+        "1": 43
+      },
+      "chips": [],
+      "overall_points": 43
+    },
+    {
+      "entry_id": 6227689,
+      "team_name": "barb.m_team",
+      "player_name": "B\u00e1rbara Marques",
+      "points_per_gw": {
+        "1": 40
+      },
+      "chips": [],
+      "overall_points": 40
+    },
+    {
+      "entry_id": 5859284,
+      "team_name": "Thronebreakers",
+      "player_name": "Jo\u00e3o Correia",
+      "points_per_gw": {
+        "1": 39
+      },
+      "chips": [],
+      "overall_points": 39
+    },
+    {
+      "entry_id": 61463,
+      "team_name": "TEAM LAC",
+      "player_name": "Lu\u00eds Correia",
+      "points_per_gw": {
+        "1": 38
+      },
+      "chips": [],
+      "overall_points": 38
+    },
+    {
+      "entry_id": 639898,
+      "team_name": "FCPiton",
+      "player_name": "Rui Vieira",
+      "points_per_gw": {
+        "1": 38
+      },
+      "chips": [],
+      "overall_points": 38
+    },
+    {
+      "entry_id": 8713538,
+      "team_name": "cachorRELA",
+      "player_name": "Jos\u00e9 Monteiro",
+      "points_per_gw": {
+        "1": 37
+      },
+      "chips": [],
+      "overall_points": 37
+    },
+    {
+      "entry_id": 565862,
+      "team_name": "k19squad_team",
+      "player_name": "Ant\u00f3nio Pereira",
+      "points_per_gw": {
+        "1": 36
+      },
+      "chips": [],
+      "overall_points": 36
+    },
+    {
+      "entry_id": 613112,
+      "team_name": "Traphouse",
+      "player_name": "Nuno Pereira",
+      "points_per_gw": {
+        "1": 32
+      },
+      "chips": [],
+      "overall_points": 32
+    },
+    {
+      "entry_id": 276068,
+      "team_name": "Caminho Lucido",
+      "player_name": "Jo\u00e3o Rodrigues",
+      "points_per_gw": {
+        "1": 31
+      },
+      "chips": [],
+      "overall_points": 31
+    },
+    {
+      "entry_id": 9052821,
+      "team_name": "Sport Lisboa Tomates",
+      "player_name": "Ricardo Sousa",
+      "points_per_gw": {
+        "1": 30
+      },
+      "chips": [],
+      "overall_points": 30
+    },
+    {
+      "entry_id": 5640672,
+      "team_name": "FCTeam",
+      "player_name": "Francisco Casaca",
+      "points_per_gw": {
+        "1": 29
+      },
+      "chips": [],
+      "overall_points": 29
+    },
+    {
+      "entry_id": 5709428,
+      "team_name": "Maior Team",
+      "player_name": "Joao Monteiro",
+      "points_per_gw": {
+        "1": 28
+      },
+      "chips": [],
+      "overall_points": 28
+    },
+    {
+      "entry_id": 3206357,
+      "team_name": "xaxaxa",
+      "player_name": "joao pinto",
+      "points_per_gw": {
+        "1": 27
+      },
+      "chips": [],
+      "overall_points": 27
+    },
+    {
+      "entry_id": 3889214,
+      "team_name": "ogoid fc",
+      "player_name": "Diogo Silva",
+      "points_per_gw": {
+        "1": 27
+      },
+      "chips": [],
+      "overall_points": 27
+    },
+    {
+      "entry_id": 1846280,
+      "team_name": "Guilhade FC Team",
+      "player_name": "Andr\u00e9 Mesquita",
+      "points_per_gw": {
+        "1": 25
+      },
+      "chips": [],
+      "overall_points": 25
+    },
+    {
+      "entry_id": 4953792,
+      "team_name": "liBEERpool",
+      "player_name": "Lu\u00eds Martins",
+      "points_per_gw": {
+        "1": 24
+      },
+      "chips": [],
+      "overall_points": 24
+    },
+    {
+      "entry_id": 1994282,
+      "team_name": "Senhora da Guia FC",
+      "player_name": "Ant\u00f3nio Pedro Monteiro",
+      "points_per_gw": {
+        "1": 19
+      },
+      "chips": [],
+      "overall_points": 19
+    },
+    {
+      "entry_id": 5702959,
+      "team_name": "Snake Club",
+      "player_name": "Bruno Silva",
+      "points_per_gw": {
+        "1": 8
+      },
+      "chips": [],
+      "overall_points": 8
+    }
+  ]
+}
